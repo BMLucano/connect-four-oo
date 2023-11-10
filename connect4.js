@@ -11,8 +11,8 @@
 // const WIDTH = 7;
 // const HEIGHT = 6;
 
-let currPlayer = 1; // active player: 1 or 2
-const board = []; // array of rows, each row is array of cells  (board[y][x])
+//let currPlayer = 1; // active player: 1 or 2
+//const board = []; // array of rows, each row is array of cells  (board[y][x])
 // (board[5][0] would be the bottom-left spot on the board)
 
 /** makeBoard: fill in global `board`:
@@ -25,12 +25,20 @@ class Game {
     this.width = width;
     this.currPlayer = 1;
     this.board = [];
-    this.makeBoard();
+    this.start();
+    //this.makeBoard();
   }
+
+  start() {
+    this.makeBoard();
+    this.makeHtmlBoard();
+  }
+
   makeBoard() {
     for (let y = 0; y < this.height; y++) {
       const emptyRow = Array.from({ length: this.width }).fill(null);
       this.board.push(emptyRow);
+      debugger;
     }
   }
 
@@ -43,15 +51,16 @@ class Game {
 
   makeHtmlBoard() {
     const htmlBoard = document.getElementById("board");
-
+    htmlBoard.innerText = "";
     // TODO: add comment for this code
     const top = document.createElement("tr");
     top.setAttribute("id", "column-top");
 
-    for (let x = 0; x < width; x++) {
+    for (let x = 0; x < this.width; x++) {
+      debugger;
       const headCell = document.createElement("td");
       headCell.setAttribute("id", `top-${x}`);
-      headCell.addEventListener("click", handleClick);
+      headCell.addEventListener("click", this.handleClick.bind(this));
       top.append(headCell);
     }
     htmlBoard.append(top);
@@ -59,10 +68,12 @@ class Game {
     // dynamically creates the main part of html board
     // uses HEIGHT to create table rows
     // uses WIDTH to create table cells for each row
-    for (let y = 0; y < HEIGHT; y++) {
+    for (let y = 0; y < this.height; y++) {
+      debugger;
       const row = document.createElement('tr');
 
-      for (let x = 0; x < WIDTH; x++) {
+      for (let x = 0; x < this.width; x++) {
+        debugger;
         const cell = document.createElement('td');
         cell.setAttribute('id', `c-${y}-${x}`);
         row.append(cell);
@@ -76,8 +87,8 @@ class Game {
    *    (return null if filled) */
 
   findSpotForCol(x) {
-    for (let y = HEIGHT - 1; y >= 0; y--) {
-      if (board[y][x] === null) {
+    for (let y = this.height - 1; y >= 0; y--) {
+      if (this.board[y][x] === null) {
         return y;
       }
     }
@@ -89,7 +100,7 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${currPlayer}`);
+    piece.classList.add(`p${this.currPlayer}`);
 
     const spot = document.getElementById(`c-${y}-${x}`);
     spot.append(piece);
@@ -113,15 +124,15 @@ class Game {
       return cells.every(
         ([y, x]) =>
           y >= 0 &&
-          y < HEIGHT &&
+          y < this.height &&
           x >= 0 &&
-          x < WIDTH &&
-          board[y][x] === currPlayer
+          x < this.width &&
+          this.board[y][x] === this.currPlayer
       );
     }
 
-    for (let y = 0; y < HEIGHT; y++) {
-      for (let x = 0; x < WIDTH; x++) {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
         // get "check list" of 4 cells (starting here) for each of the different
         // ways to win
         const horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
@@ -145,34 +156,32 @@ class Game {
     const x = Number(evt.target.id.slice("top-".length));
 
     // get next spot in column (if none, ignore click)
-    const y = findSpotForCol(x);
+    const y = this.findSpotForCol(x);
     if (y === null) {
       return;
     }
 
     // place piece in board and add to HTML table
-    board[y][x] = currPlayer;
-    placeInTable(y, x);
+    this.board[y][x] = this.currPlayer;
+    this.placeInTable(y, x);
 
     // check for win
-    if (checkForWin()) {
-      return endGame(`Player ${currPlayer} won!`);
+    if (this.checkForWin()) {
+      return this.endGame(`Player ${this.currPlayer} won!`);
     }
 
     // check for tie: if top row is filled, board is filled
-    if (board[0].every(cell => cell !== null)) {
-      return endGame('Tie!');
+    if (this.board[0].every(cell => cell !== null)) {
+      return this.endGame('Tie!');
     }
 
     // switch players
-    currPlayer = currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
   }
 
   /** Start game. */
 
-  start() {
-    makeBoard();
-    makeHtmlBoard();
-  }
+
 }
-start();
+//start();
+new Game(6,7);
