@@ -38,15 +38,8 @@ class Game {
     for (let y = 0; y < this.height; y++) {
       const emptyRow = Array.from({ length: this.width }).fill(null);
       this.board.push(emptyRow);
-      debugger;
     }
   }
-
-
-
-
-
-
   /** makeHtmlBoard: make HTML table and row of column tops. */
 
   makeHtmlBoard() {
@@ -57,7 +50,7 @@ class Game {
     top.setAttribute("id", "column-top");
 
     for (let x = 0; x < this.width; x++) {
-      debugger;
+
       const headCell = document.createElement("td");
       headCell.setAttribute("id", `top-${x}`);
       headCell.addEventListener("click", this.handleClick.bind(this));
@@ -116,12 +109,12 @@ class Game {
 
   checkForWin() {
 
-    function _win(cells) {
+    const _win = cells =>
       // Check four cells to see if they're all color of current player
       //  - cells: list of four (y, x) cells
       //  - returns true if all are legal coordinates & all match currPlayer
 
-      return cells.every(
+        cells.every(
         ([y, x]) =>
           y >= 0 &&
           y < this.height &&
@@ -129,7 +122,7 @@ class Game {
           x < this.width &&
           this.board[y][x] === this.currPlayer
       );
-    }
+
 
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
@@ -154,7 +147,7 @@ class Game {
   handleClick(evt) {
     // get x from ID of clicked cell
     const x = Number(evt.target.id.slice("top-".length));
-
+    // const x = Number(evt.target.id);
     // get next spot in column (if none, ignore click)
     const y = this.findSpotForCol(x);
     if (y === null) {
