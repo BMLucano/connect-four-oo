@@ -103,8 +103,9 @@ class Game {
   /** endGame: announce game end */
 
   endGame(msg) {
+    const top = document.querySelector("#column-top");
+    top.removeEventListener('click', this.handleClick.bind(this));
     alert(msg);
-    this.gameOver = true;
   }
 
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -136,7 +137,7 @@ class Game {
         const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
         // find winner (only checking each win-possibility as needed)
-        if (_win.(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
+        if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
           return true;
         }
       }
@@ -162,13 +163,18 @@ class Game {
 
     // check for win
     if (this.checkForWin()) {
+      this.gameOver = true;
       return this.endGame(`Player ${this.currPlayer} won!`);
+
+
     }
 
     // check for tie: if top row is filled, board is filled
     if (this.board[0].every(cell => cell !== null)) {
       return this.endGame('Tie!');
     }
+
+
 
     // switch players
     this.currPlayer = this.currPlayer === 1 ? 2 : 1;
@@ -179,6 +185,9 @@ class Game {
 
 }
 //start();
-new Game(6,7);
 
-document.getElementById("start-game").addEventListener('click', )
+document.getElementById("start-game").addEventListener('click', function(e){
+  e.preventDefault();
+  new Game(6,7);
+
+})
