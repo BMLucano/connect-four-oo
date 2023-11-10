@@ -26,7 +26,8 @@ class Game {
     this.currPlayer = 1;
     this.board = [];
     this.start();
-    //this.makeBoard();
+    this.gameOver = false;
+
   }
 
   start() {
@@ -103,6 +104,7 @@ class Game {
 
   endGame(msg) {
     alert(msg);
+    this.gameOver = true;
   }
 
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -134,7 +136,7 @@ class Game {
         const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
         // find winner (only checking each win-possibility as needed)
-        if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
+        if (_win.(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
           return true;
         }
       }
@@ -178,3 +180,5 @@ class Game {
 }
 //start();
 new Game(6,7);
+
+document.getElementById("start-game").addEventListener('click', )
