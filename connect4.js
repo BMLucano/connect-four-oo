@@ -23,14 +23,15 @@ class Game {
   constructor(p1, p2, height = 6, width = 7) {
     this.height = height;
     this.width = width;
+    this.p1 = p1
+    this.p2 = p2
     // this.currPlayer = 1;
     this.currPlayer = p1
     this.board = [];
     this.start();
     this.gameOver = false;
 
-    this.p1 = p1
-    this.p2 = p2
+
   }
 
   start() {
@@ -66,11 +67,9 @@ class Game {
     // uses HEIGHT to create table rows
     // uses WIDTH to create table cells for each row
     for (let y = 0; y < this.height; y++) {
-      debugger;
       const row = document.createElement('tr');
 
       for (let x = 0; x < this.width; x++) {
-        debugger;
         const cell = document.createElement('td');
         cell.setAttribute('id', `c-${y}-${x}`);
         row.append(cell);
@@ -97,17 +96,19 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    // piece.classList.add(`p${this.currPlayer}`);
     piece.style.backgroundColor = this.currPlayer.color
 
     const spot = document.getElementById(`c-${y}-${x}`);
     spot.append(piece);
   }
 
-  /** endGame: announce game end */
+  /** endGame: announce game end , set delay to allow for piece to show before alert*/
 
   endGame(msg) {
-    alert(msg);
+    setTimeout(() => {
+      alert(msg);
+    }, 0)
+
   }
 
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -150,6 +151,7 @@ class Game {
   /** handleClick: handle click of column top to play piece */
 
   handleClick(evt) {
+    //if game is over, ignore click to prevent additional moves
     if(this.gameOver){
       return;
     }
@@ -169,34 +171,31 @@ class Game {
     // check for win
     if (this.checkForWin()) {
       this.gameOver = true;
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`Player ${this.currPlayer.color} won!`);
 
     }
-
     // check for tie: if top row is filled, board is filled
     if (this.board[0].every(cell => cell !== null)) {
+      this.gameOver = true;
       return this.endGame('Tie!');
     }
-
-
 
     // switch players
     this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
   }
-
-  /** Start game. */
-
-
 }
+new Game (6, 7)
+/** create Player class and assign color property */
 class Player{
   constructor(color){
     this.color = color
   }
 }
 
+/**create listener for start game. create new instance with p1 & p2 */
 document.getElementById("start-game").addEventListener('click', function(e){
   e.preventDefault();
-  let p1 = new Player(document.getElementById("player-one").value);
-  let p2 = new Player(document.getElementById("player-two").value);
+  let p1 = new Player(document.getElementById("player-1").value);
+  let p2 = new Player(document.getElementById("player-2").value);
   new Game(p1, p2);
 })
