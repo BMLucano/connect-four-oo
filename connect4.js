@@ -20,14 +20,17 @@
  */
 //is this redundant??
 class Game {
-  constructor(height = 6, width = 7) {
+  constructor(p1, p2, height = 6, width = 7) {
     this.height = height;
     this.width = width;
-    this.currPlayer = 1;
+    // this.currPlayer = 1;
+    this.currPlayer = p1
     this.board = [];
     this.start();
     this.gameOver = false;
 
+    this.p1 = p1
+    this.p2 = p2
   }
 
   start() {
@@ -94,7 +97,8 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    // piece.classList.add(`p${this.currPlayer}`);
+    piece.style.backgroundColor = this.currPlayer.color
 
     const spot = document.getElementById(`c-${y}-${x}`);
     spot.append(piece);
@@ -103,8 +107,6 @@ class Game {
   /** endGame: announce game end */
 
   endGame(msg) {
-    const top = document.querySelector("#column-top");
-    top.removeEventListener('click', this.handleClick.bind(this));
     alert(msg);
   }
 
@@ -148,6 +150,9 @@ class Game {
   /** handleClick: handle click of column top to play piece */
 
   handleClick(evt) {
+    if(this.gameOver){
+      return;
+    }
     // get x from ID of clicked cell
     const x = Number(evt.target.id.slice("top-".length));
     // const x = Number(evt.target.id);
@@ -166,7 +171,6 @@ class Game {
       this.gameOver = true;
       return this.endGame(`Player ${this.currPlayer} won!`);
 
-
     }
 
     // check for tie: if top row is filled, board is filled
@@ -177,17 +181,22 @@ class Game {
 
 
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
   }
 
   /** Start game. */
 
 
 }
-//start();
+class Player{
+  constructor(color){
+    this.color = color
+  }
+}
 
 document.getElementById("start-game").addEventListener('click', function(e){
   e.preventDefault();
-  new Game(6,7);
-
+  let p1 = new Player(document.getElementById("player-one").value);
+  let p2 = new Player(document.getElementById("player-two").value);
+  new Game(p1, p2);
 })
